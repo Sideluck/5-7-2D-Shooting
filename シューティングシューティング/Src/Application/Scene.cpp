@@ -17,15 +17,23 @@ void Scene::Update()
 
 void Scene::Init()
 {
-	m_playerTex.Load("Texture/Player/Player_Idle.png");
-	m_player.SetTexture(&m_playerTex);
-
 	m_player.Init();
+
+	m_playerIdleTex.Load("Texture/Player/Player_Idle.png");
+	m_playerRunTex.Load("Texture/Player/Player_Run.png");
+	m_playerJumpTex.Load("Texture/Player/Player_Jump.png");
+
+	m_player.IdleSetTexture(&m_playerIdleTex);
+	m_player.RunSetTexture(&m_playerRunTex);
+	m_player.JumpSetTexture(&m_playerJumpTex);
+
 }
 
 void Scene::Release()
 {
-	m_playerTex.Release();
+	m_playerIdleTex.Release();
+	m_playerRunTex.Release();
+	m_playerJumpTex.Release();
 }
 
 void Scene::ImGuiUpdate()

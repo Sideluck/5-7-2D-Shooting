@@ -7,7 +7,9 @@ class Scene
 private:
 
 	Player m_player;
-	KdTexture m_playerTex;
+	KdTexture m_playerIdleTex;
+	KdTexture m_playerRunTex;
+	KdTexture m_playerJumpTex;
 
 public:
 
