@@ -7,22 +7,25 @@ void Scene::DynamicDraw2D()
 
 void Scene::Draw2D()
 {
-	
+	m_player.Draw();
 }
 
 void Scene::Update()
 {
-	
+	m_player.Update();
 }
 
 void Scene::Init()
 {
-	
+	m_playerTex.Load("Texture/Player/Player.png");
+	m_player.SetTexture(&m_playerTex);
+
+	m_player.Init();
 }
 
 void Scene::Release()
 {
-	
+	m_playerTex.Release();
 }
 
 void Scene::ImGuiUpdate()

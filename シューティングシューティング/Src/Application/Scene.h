@@ -1,8 +1,13 @@
 #pragma once
 
+#include "Player.h"
+
 class Scene
 {
 private:
+
+	Player m_player;
+	KdTexture m_playerTex;
 
 public:
 
