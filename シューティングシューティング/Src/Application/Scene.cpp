@@ -17,7 +17,7 @@ void Scene::Update()
 
 void Scene::Init()
 {
-	m_playerTex.Load("Texture/Player/Player.png");
+	m_playerTex.Load("Texture/Player/Player_Idle.png");
 	m_player.SetTexture(&m_playerTex);
 
 	m_player.Init();
