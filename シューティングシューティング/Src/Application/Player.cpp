@@ -6,23 +6,24 @@ void Player::Init()
 	m_Move				= Math::Vector2(0, 0);
 	m_Image				= Math::Vector2(48, 48);
 	m_AnimCnt			= 0;
-	m_AnimSpeed			= 0.13;
+	m_AnimSpd			= 0;
 	m_MovePow			= 5.0;
 	m_ScaleX			= 2.0;
 	m_ScaleY			= 2.0;
 	m_Gravity			= 0.8;
-	m_JumpPow			= 20;
-	m_Alive				= true;
-	m_Jump				= false;
-	m_NotContinuJump    = false;
-	m_Idle				= true;
-	m_Run_Left			= false;
-	m_Run_Right			= false;
+	m_JumpPow			= 15;
+	m_AliveFlg				= true;
+	m_JumpFlg				= false;
+	m_JumpAniFlg			= false;
+	m_NotJumpFlg			= false;
+	m_IdleFlg				= true;
+	m_Run_LeftFlg			= false;
+	m_Run_RightFlg			= false;
 }
 
 void Player::Update()
 {
-	if (!m_Alive)return;
+	if (!m_AliveFlg)return;
 	
 	m_Move.x = 0;
 	m_Move.y -= m_Gravity;
@@ -42,9 +43,8 @@ void Player::PlayerRun()
 	{
 		m_Pos.x -= m_MovePow;
 		m_ScaleX = -2;
-		m_AnimSpeed = 0.2;
-		m_Idle = false;
-		m_Run_Left = true;
+		m_IdleFlg = false;
+		m_Run_LeftFlg = true;
 		if (m_Pos.x < -595)
 		{
 			m_Pos.x = -595;
@@ -54,9 +54,8 @@ void Player::PlayerRun()
 	{
 		m_Pos.x += m_MovePow;
 		m_ScaleX = 2;
-		m_AnimSpeed = 0.2;
-		m_Idle = false;
-		m_Run_Right = true;
+		m_IdleFlg = false;
+		m_Run_RightFlg = true;
 		if (m_Pos.x > 595)
 		{
 			m_Pos.x = 595;
@@ -64,31 +63,39 @@ void Player::PlayerRun()
 	}
 	else
 	{
-		m_AnimSpeed = 0.13;
-		m_Idle = true;
-		m_Run_Left = false;
-		m_Run_Right = false;
+		m_IdleFlg = true;
+		m_Run_LeftFlg = false;
+		m_Run_RightFlg = false;
 	}
 
 	//ƒWƒƒƒ“ƒv
 
+	if (m_Pos.y > -200)
+	{
+		m_JumpAniFlg = true;
+	}
+	else {
+		m_JumpAniFlg = false;
+	}
+
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
-		if (!m_NotContinuJump)
+		if (!m_JumpAniFlg)
 		{
-			if (!m_Jump)
+			if (!m_NotJumpFlg)
 			{
-				m_Move.y = m_JumpPow;
-				m_NotContinuJump = true;
-				m_Jump = true;
-				m_AnimSpeed = 0.2;
+				if (!m_JumpFlg)
+				{
+					m_Move.y = m_JumpPow;
+					m_JumpFlg = true;
+					m_NotJumpFlg = true;
+				}
 			}
 		}
 	}
 	else 
 	{
-		m_AnimSpeed = 0.13;
-		m_Jump = false;
+		m_JumpFlg = false;
 	}
 
 	m_Pos.x += m_Move.x;
@@ -98,23 +105,23 @@ void Player::PlayerRun()
 	{
 		m_Pos.y = -200;
 		m_Move.y = 0;
-		m_NotContinuJump = false;
+		m_NotJumpFlg = false;
 	}
 }
 
 void Player::Draw()
 {
-	if (!m_Alive)return;
+	if (!m_AliveFlg)return;
 
-	if (m_Idle && !m_Jump)
+	if (m_IdleFlg && !m_JumpAniFlg)
 	{
 		DrawIdle();
 	}
-	if (m_Run_Left && !m_Jump || m_Run_Right && !m_Jump)
+	if (m_Run_LeftFlg && !m_JumpAniFlg || m_Run_RightFlg && !m_JumpAniFlg)
 	{
 		DrawRun();
 	}
-	if (m_Jump)
+	if (m_JumpAniFlg)
 	{
 		DrawJump();
 	}
@@ -122,9 +129,10 @@ void Player::Draw()
 
 void Player::DrawIdle()
 {
-	if (!m_Idle)return;
+	if (!m_IdleFlg)return;
 
-	m_AnimCnt += m_AnimSpeed;
+	m_AnimSpd = 0.13;
+	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 4)
 	{
 		m_AnimCnt = 0;
@@ -136,8 +144,8 @@ void Player::DrawIdle()
 
 void Player::DrawRun()
 {
-
-	m_AnimCnt += m_AnimSpeed;
+	m_AnimSpd = 0.2;
+	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 6)
 	{
 		m_AnimCnt = 0;
@@ -149,10 +157,11 @@ void Player::DrawRun()
 
 void Player::DrawJump()
 {
-	m_AnimCnt += m_AnimSpeed;
-	if (m_AnimCnt >= 4)
+	
+	m_AnimCnt += m_AnimSpd;
+	if (m_AnimCnt >= 1)
 	{
-		m_AnimCnt = 4;
+		m_AnimCnt = 1;
 	}
 
 	SHADER.m_spriteShader.SetMatrix(m_Mat);
