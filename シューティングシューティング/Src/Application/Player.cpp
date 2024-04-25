@@ -5,20 +5,19 @@ void Player::Init()
 	m_Pos				= Math::Vector2(0, -200);
 	m_Move				= Math::Vector2(0, 0);
 	m_Image				= Math::Vector2(48, 48);
+	m_Scale		        = Math::Vector2(2, 2);
 	m_AnimCnt			= 0;
 	m_AnimSpd			= 0;
 	m_MovePow			= 5.0;
-	m_ScaleX			= 2.0;
-	m_ScaleY			= 2.0;
 	m_Gravity			= 0.8;
 	m_JumpPow			= 15;
-	m_AliveFlg				= true;
-	m_JumpFlg				= false;
-	m_JumpAniFlg			= false;
-	m_NotJumpFlg			= false;
-	m_IdleFlg				= true;
-	m_Run_LeftFlg			= false;
-	m_Run_RightFlg			= false;
+	m_AliveFlg			= true;
+	m_JumpFlg			= false;
+	m_JumpAniFlg		= false;
+	m_NotJumpFlg		= false;
+	m_IdleFlg			= true;
+	m_Run_LeftFlg		= false;
+	m_Run_RightFlg		= false;
 }
 
 void Player::Update()
@@ -28,21 +27,21 @@ void Player::Update()
 	m_Move.x = 0;
 	m_Move.y -= m_Gravity;
 
-	PlayerRun();
+	PlayerAction();
 
-	m_Scalemat = Math::Matrix::CreateScale(m_ScaleX, m_ScaleY, 0);
+	m_Scalemat = Math::Matrix::CreateScale(m_Scale.x, m_Scale.y, 0);
 	m_Tansmat = Math::Matrix::CreateTranslation(m_Pos.x, m_Pos.y, 0);
 	m_Mat = m_Scalemat * m_Tansmat;
 }
 
-void Player::PlayerRun()
+void Player::PlayerAction()
 {
 	//ˆÚ“®
 
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
 		m_Pos.x -= m_MovePow;
-		m_ScaleX = -2;
+		m_Scale.x = -2;
 		m_IdleFlg = false;
 		m_Run_LeftFlg = true;
 		if (m_Pos.x < -595)
@@ -53,7 +52,7 @@ void Player::PlayerRun()
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
 		m_Pos.x += m_MovePow;
-		m_ScaleX = 2;
+		m_Scale.x = 2;
 		m_IdleFlg = false;
 		m_Run_RightFlg = true;
 		if (m_Pos.x > 595)
@@ -107,23 +106,40 @@ void Player::PlayerRun()
 		m_Move.y = 0;
 		m_NotJumpFlg = false;
 	}
+
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+	{
+		m_GunFlg = true;
+	}
+	else
+	{
+		m_GunFlg = false;
+	}
 }
 
 void Player::Draw()
 {
 	if (!m_AliveFlg)return;
 
-	if (m_IdleFlg && !m_JumpAniFlg)
+	if (m_IdleFlg && !m_JumpAniFlg && !m_GunFlg)
 	{
 		DrawIdle();
 	}
-	if (m_Run_LeftFlg && !m_JumpAniFlg || m_Run_RightFlg && !m_JumpAniFlg)
+	if (m_Run_LeftFlg && !m_JumpAniFlg && !m_GunFlg || m_Run_RightFlg && !m_JumpAniFlg && !m_GunFlg)
 	{
 		DrawRun();
 	}
 	if (m_JumpAniFlg)
 	{
 		DrawJump();
+	}
+	if (m_IdleFlg && !m_JumpAniFlg && m_GunFlg)
+	{
+		DrawIdleShot();
+	}
+	if (m_Run_LeftFlg && !m_JumpAniFlg && m_GunFlg || m_Run_RightFlg && !m_JumpAniFlg && m_GunFlg)
+	{
+		DrawRunShot();
 	}
 }
 
@@ -142,6 +158,18 @@ void Player::DrawIdle()
 	SHADER.m_spriteShader.DrawTex(m_IdleTex, Math::Rectangle((int)m_AnimCnt * m_Image.x, 0, m_Image.x, m_Image.y), 1.0f);
 }
 
+void Player::DrawIdleShot()
+{
+	m_AnimCnt += m_AnimSpd;
+	if (m_AnimCnt >= 2)
+	{
+		m_AnimCnt = 0;
+	}
+
+	SHADER.m_spriteShader.SetMatrix(m_Mat);
+	SHADER.m_spriteShader.DrawTex(m_IdleShotTex, Math::Rectangle((int)m_AnimCnt * m_Image.x, 0, m_Image.x, m_Image.y), 1.0f);
+}
+
 void Player::DrawRun()
 {
 	m_AnimSpd = 0.2;
@@ -155,9 +183,21 @@ void Player::DrawRun()
 	SHADER.m_spriteShader.DrawTex(m_RunTex, Math::Rectangle((int)m_AnimCnt * m_Image.x, 0, m_Image.x, m_Image.y), 1.0f);
 }
 
+void Player::DrawRunShot()
+{
+	m_AnimSpd = 0.2;
+	m_AnimCnt += m_AnimSpd;
+	if (m_AnimCnt >= 6)
+	{
+		m_AnimCnt = 0;
+	}
+
+	SHADER.m_spriteShader.SetMatrix(m_Mat);
+	SHADER.m_spriteShader.DrawTex(m_RunShotTex, Math::Rectangle((int)m_AnimCnt * m_Image.x, 0, m_Image.x, m_Image.y), 1.0f);
+}
+
 void Player::DrawJump()
 {
-	
 	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 1)
 	{
