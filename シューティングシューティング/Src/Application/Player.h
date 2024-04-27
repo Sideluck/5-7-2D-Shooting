@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Object/bullet.h"
+
+class Scene;
+
 class Player
 {
 public:
@@ -10,17 +14,22 @@ public:
 	void Update();
 	void PlayerAction();
 	void Draw();
+	void DrawBullet();
 	void DrawIdle();
 	void DrawIdleShot();
 	void DrawRun();
 	void DrawRunShot();
 	void DrawJump();
 
+	Math::Vector2 GetPos() { return m_Pos; }
+	bool GetGun() { return m_GunFlg; }
+
 	void SetIdleTexture(KdTexture* a_tex) { m_IdleTex = a_tex; }
 	void SetRunTexture(KdTexture* b_tex) { m_RunTex = b_tex; }
 	void SetJumpTexture(KdTexture* c_tex) { m_JumpTex = c_tex; }
 	void SetIdleShotTexture(KdTexture* d_tex) { m_IdleShotTex = d_tex; }
 	void SetRunShotTexture(KdTexture* e_tex) { m_RunShotTex = e_tex; }
+	void SetBulletTexture(KdTexture* f_tex) { m_BulletTex = f_tex; }
 
 private:
 
@@ -48,5 +57,9 @@ private:
 	bool			m_IdleFlg;		//今立ち姿(何もボタンを押していない)かのフラグ
 	bool			m_Run_LeftFlg;	//今左に移動しているかのフラグ
 	bool			m_Run_RightFlg;	//今右に移動しているかのフラグ
-	bool			m_GunFlg;	//銃を撃った時のフラグ
+	bool			m_GunFlg;		//銃を撃った時のフラグ
+
+	KdTexture* m_BulletTex;					//弾ポインタ
+	static const int BULLET_MAX = 40;		//弾数
+	Bullet* m_bulletList[BULLET_MAX];		//弾配列100発分
 };
