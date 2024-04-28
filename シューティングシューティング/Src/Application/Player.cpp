@@ -16,6 +16,8 @@ void Player::Init()
 	m_JumpAniFlg		= false;
 	m_NotJumpFlg		= false;
 	m_IdleFlg			= true;
+	m_IdleLeftFlg		= false;
+	m_IdleRightFlg		= true;
 	m_Run_LeftFlg		= false;
 	m_Run_RightFlg		= false;
 }
@@ -44,6 +46,9 @@ void Player::PlayerAction()
 		m_Scale.x = -2.5;
 		m_IdleFlg = false;
 		m_Run_LeftFlg = true;
+		m_Run_RightFlg = false;
+		m_IdleLeftFlg = true;
+		m_IdleRightFlg = false;
 		if (m_Pos.x < -595)
 		{
 			m_Pos.x = -595;
@@ -54,7 +59,10 @@ void Player::PlayerAction()
 		m_Pos.x += m_MovePow;
 		m_Scale.x = 2.5;
 		m_IdleFlg = false;
+		m_Run_LeftFlg = false;
 		m_Run_RightFlg = true;
+		m_IdleLeftFlg = false;
+		m_IdleRightFlg = true;
 		if (m_Pos.x > 595)
 		{
 			m_Pos.x = 595;
@@ -110,16 +118,33 @@ void Player::PlayerAction()
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
 		m_GunFlg = true;
-		for (int b = 0; b < BULLET_MAX; b++)
+		if (m_Run_RightFlg|| m_IdleRightFlg)
 		{
-			if (m_bulletList[b] == nullptr)
+			for (int b = 0; b < RIGHTBULLET_MAX; b++)
 			{
+				if (m_RightbulletList[b] == nullptr)
+				{
 
-				m_bulletList[b] = new Bullet();
-				m_bulletList[b]->Init();
-				m_bulletList[b]->SetBulletTexture(m_BulletTex);
-				m_bulletList[b]->Shot(m_Pos);
-				break;
+					m_RightbulletList[b] = new Bullet();
+					m_RightbulletList[b]->InitRightBullet();
+					m_RightbulletList[b]->SetRightBulletTexture(m_RightBulletTex);
+					m_RightbulletList[b]->ShotRightBullet(m_Pos);
+					break;
+				}
+			}
+		}	
+		if (m_Run_LeftFlg|| m_IdleLeftFlg)
+		{
+			for (int b = 0; b < LEFTBULLET_MAX; b++)
+			{
+				if (m_LeftbulletList[b] == nullptr)
+				{
+					m_LeftbulletList[b] = new Bullet();
+					m_LeftbulletList[b]->InitLeftBullet();
+					m_LeftbulletList[b]->SetLeftBulletTexture(m_LeftBulletTex);
+					m_LeftbulletList[b]->ShotLeftBullet(m_Pos);
+					break;
+				}
 			}
 		}
 	}
@@ -129,15 +154,27 @@ void Player::PlayerAction()
 	}
 
 
-	for (int b = 0; b < BULLET_MAX; b++)
+	for (int b = 0; b < RIGHTBULLET_MAX; b++)
 	{
-		if (m_bulletList[b] == nullptr)continue;
-		m_bulletList[b]->Update();
+		if (m_RightbulletList[b] == nullptr)continue;
+		m_RightbulletList[b]->UpdateRightBullet();
 
-		if (!m_bulletList[b]->GetAlive())
+		if (!m_RightbulletList[b]->GetAlive())
 		{
-			delete m_bulletList[b];
-			m_bulletList[b] = nullptr;
+			delete m_RightbulletList[b];
+			m_RightbulletList[b] = nullptr;
+		}
+	}
+
+	for (int b = 0; b < LEFTBULLET_MAX; b++)
+	{
+		if (m_LeftbulletList[b] == nullptr)continue;
+		m_LeftbulletList[b]->UpdateLeftBullet();
+
+		if (!m_LeftbulletList[b]->GetAlive())
+		{
+			delete m_LeftbulletList[b];
+			m_LeftbulletList[b] = nullptr;
 		}
 	}
 }
@@ -146,7 +183,8 @@ void Player::Draw()
 {
 	if (!m_AliveFlg)return;
 
-	DrawBullet();
+	DrawRightBullet();
+	DrawLeftBullet();
 
 	if (m_IdleFlg && !m_JumpAniFlg && !m_GunFlg)
 	{
@@ -170,16 +208,28 @@ void Player::Draw()
 	}
 }
 
-void Player::DrawBullet()
+void Player::DrawRightBullet()
 {
-	for (int b = 0; b < BULLET_MAX; b++)
+	for (int b = 0; b < RIGHTBULLET_MAX; b++)
 	{
-		if (m_bulletList[b] == nullptr)continue;
-		m_bulletList[b]->Draw();
+		if (m_RightbulletList[b] == nullptr)continue;
+		m_RightbulletList[b]->DrawRightBullet();
 	}
 
 	SHADER.m_spriteShader.SetMatrix(m_Mat);
-	SHADER.m_spriteShader.DrawTex(m_BulletTex, Math::Rectangle(0, 0, 0, 0), 1.0f);
+	SHADER.m_spriteShader.DrawTex(m_RightBulletTex, Math::Rectangle(0, 0, 0, 0), 1.0f);
+}
+
+void Player::DrawLeftBullet()
+{
+	for (int b = 0; b < LEFTBULLET_MAX; b++)
+	{
+		if (m_LeftbulletList[b] == nullptr)continue;
+		m_LeftbulletList[b]->DrawLeftBullet();
+	}
+
+	SHADER.m_spriteShader.SetMatrix(m_Mat);
+	SHADER.m_spriteShader.DrawTex(m_LeftBulletTex, Math::Rectangle(0, 0, 0, 0), 1.0f);
 }
 
 void Player::DrawIdle()

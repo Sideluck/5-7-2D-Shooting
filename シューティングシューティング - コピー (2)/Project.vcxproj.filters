@@ -49,6 +49,9 @@
     <Filter Include="Src\Application\BackGround">
       <UniqueIdentifier>{4fbb3cdd-df95-452b-acb9-7a8857db4c4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Object">
+      <UniqueIdentifier>{96e49fe2-1706-45d5-aa6d-d89297b4f4b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -150,6 +153,12 @@
     <ClInclude Include="Src\Application\Player.h">
       <Filter>Src\Application\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Bullet.h">
+      <Filter>Src\Application\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Utility.h">
+      <Filter>Src\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -220,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Player.cpp">
       <Filter>Src\Application\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Bullet.cpp">
+      <Filter>Src\Application\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

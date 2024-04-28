@@ -5,7 +5,7 @@ void Player::Init()
 	m_Pos				= Math::Vector2(0, -200);
 	m_Move				= Math::Vector2(0, 0);
 	m_Image				= Math::Vector2(48, 48);
-	m_Scale		        = Math::Vector2(2, 2);
+	m_Scale		        = Math::Vector2(2.5, 2.5);
 	m_AnimCnt			= 0;
 	m_AnimSpd			= 0;
 	m_MovePow			= 5.0;
@@ -41,7 +41,7 @@ void Player::PlayerAction()
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
 		m_Pos.x -= m_MovePow;
-		m_Scale.x = -2;
+		m_Scale.x = -2.5;
 		m_IdleFlg = false;
 		m_Run_LeftFlg = true;
 		if (m_Pos.x < -595)
@@ -52,7 +52,7 @@ void Player::PlayerAction()
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
 		m_Pos.x += m_MovePow;
-		m_Scale.x = 2;
+		m_Scale.x = 2.5;
 		m_IdleFlg = false;
 		m_Run_RightFlg = true;
 		if (m_Pos.x > 595)
@@ -110,16 +110,43 @@ void Player::PlayerAction()
 	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
 		m_GunFlg = true;
+		for (int b = 0; b < BULLET_MAX; b++)
+		{
+			if (m_bulletList[b] == nullptr)
+			{
+
+				m_bulletList[b] = new Bullet();
+				m_bulletList[b]->Init();
+				m_bulletList[b]->SetBulletTexture(m_BulletTex);
+				m_bulletList[b]->Shot(m_Pos);
+				break;
+			}
+		}
 	}
 	else
 	{
 		m_GunFlg = false;
+	}
+
+
+	for (int b = 0; b < BULLET_MAX; b++)
+	{
+		if (m_bulletList[b] == nullptr)continue;
+		m_bulletList[b]->Update();
+
+		if (!m_bulletList[b]->GetAlive())
+		{
+			delete m_bulletList[b];
+			m_bulletList[b] = nullptr;
+		}
 	}
 }
 
 void Player::Draw()
 {
 	if (!m_AliveFlg)return;
+
+	DrawBullet();
 
 	if (m_IdleFlg && !m_JumpAniFlg && !m_GunFlg)
 	{
@@ -143,6 +170,18 @@ void Player::Draw()
 	}
 }
 
+void Player::DrawBullet()
+{
+	for (int b = 0; b < BULLET_MAX; b++)
+	{
+		if (m_bulletList[b] == nullptr)continue;
+		m_bulletList[b]->Draw();
+	}
+
+	SHADER.m_spriteShader.SetMatrix(m_Mat);
+	SHADER.m_spriteShader.DrawTex(m_BulletTex, Math::Rectangle(0, 0, 0, 0), 1.0f);
+}
+
 void Player::DrawIdle()
 {
 	if (!m_IdleFlg)return;
@@ -160,6 +199,7 @@ void Player::DrawIdle()
 
 void Player::DrawIdleShot()
 {
+	m_AnimSpd = 0.2;
 	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 2)
 	{
@@ -172,7 +212,7 @@ void Player::DrawIdleShot()
 
 void Player::DrawRun()
 {
-	m_AnimSpd = 0.2;
+	m_AnimSpd = 0.25;
 	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 6)
 	{
@@ -185,7 +225,7 @@ void Player::DrawRun()
 
 void Player::DrawRunShot()
 {
-	m_AnimSpd = 0.2;
+	m_AnimSpd = 0.25;
 	m_AnimCnt += m_AnimSpd;
 	if (m_AnimCnt >= 6)
 	{

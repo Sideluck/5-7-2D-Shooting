@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "BackGround/BackGround.h"
+#include "Object/Bullet.h"
 
 enum SceneType
 {
@@ -20,9 +21,14 @@ private:
 	KdTexture m_playerJumpTex;
 	KdTexture m_playerIdleShotTex;
 	KdTexture m_playerRunShotTex;
+	KdTexture m_BulletTex;
 
 	BG m_back;
-	KdTexture m_backTex;
+	BG m_Gameback;
+	BG m_Resultback;
+	KdTexture m_TitlebackTex;
+	KdTexture m_GamebackTex;
+	KdTexture m_ResultbackTex;
 
 	SceneType nowScene;
 

@@ -129,7 +129,10 @@ void Scene::Init()
 	m_playerJumpTex.Load("Texture/Player/Player_Jump.png");
 	m_playerIdleShotTex.Load("Texture/Player/Player_Idle_Shot.png");
 	m_playerRunShotTex.Load("Texture/Player/Player_Run_Shot.png");
-	m_BulletTex.Load("Texture/Object/Bullet.png");
+
+	m_LeftBulletTex.Load("Texture/Object/Bullet.png");
+	m_RightBulletTex.Load("Texture/Object/Bullet.png");
+
 	m_TitlebackTex.Load("Texture/BackGround/Background.png");
 	m_GamebackTex.Load("Texture/BackGround/Background2.png");
 	m_ResultbackTex.Load("Texture/BackGround/Background3.png");
@@ -139,7 +142,9 @@ void Scene::Init()
 	m_player.SetJumpTexture(&m_playerJumpTex);
 	m_player.SetIdleShotTexture(&m_playerIdleShotTex);
 	m_player.SetRunShotTexture(&m_playerRunShotTex);
-	m_player.SetBulletTexture(&m_BulletTex);
+	m_player.SetLeftBulletTexture(&m_LeftBulletTex);
+	m_player.SetRightBulletTexture(&m_RightBulletTex);
+
 	m_back.SetTitleBackTexture(&m_TitlebackTex);
 	m_Gameback.SetGameBackTexture(&m_GamebackTex);
 	m_Resultback.SetResultBackTexture(&m_ResultbackTex);
@@ -159,12 +164,7 @@ void Scene::Release()
 
 void Scene::ImGuiUpdate()
 {
-	//return;
-
-
-	float p = m_player.GetPos().x;
-
-	ImGui::SliderFloat(u8"‰ŠCD",&p, 0, 100);
+	return;
 
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiSetCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Once);

@@ -14,7 +14,8 @@ public:
 	void Update();
 	void PlayerAction();
 	void Draw();
-	void DrawBullet();
+	void DrawRightBullet();
+	void DrawLeftBullet();
 	void DrawIdle();
 	void DrawIdleShot();
 	void DrawRun();
@@ -29,7 +30,8 @@ public:
 	void SetJumpTexture(KdTexture* c_tex) { m_JumpTex = c_tex; }
 	void SetIdleShotTexture(KdTexture* d_tex) { m_IdleShotTex = d_tex; }
 	void SetRunShotTexture(KdTexture* e_tex) { m_RunShotTex = e_tex; }
-	void SetBulletTexture(KdTexture* f_tex) { m_BulletTex = f_tex; }
+	void SetLeftBulletTexture(KdTexture* h_tex) { m_LeftBulletTex = h_tex; }
+	void SetRightBulletTexture(KdTexture* f_tex) { m_RightBulletTex = f_tex; }
 
 private:
 
@@ -55,11 +57,20 @@ private:
 	bool			m_JumpAniFlg;	//ジャンプのアニメーションのフラグ
 	bool			m_NotJumpFlg;	//連続ジャンプを防ぐためのフラグ
 	bool			m_IdleFlg;		//今立ち姿(何もボタンを押していない)かのフラグ
+	bool			m_IdleLeftFlg;	//今立ち姿かつ左を向いているかのフラグ
+	bool			m_IdleRightFlg;	//今立ち姿かつ右を向いているかのフラグ
 	bool			m_Run_LeftFlg;	//今左に移動しているかのフラグ
 	bool			m_Run_RightFlg;	//今右に移動しているかのフラグ
 	bool			m_GunFlg;		//銃を撃った時のフラグ
 
-	KdTexture* m_BulletTex;					//弾ポインタ
-	static const int BULLET_MAX = 40;		//弾数
-	Bullet* m_bulletList[BULLET_MAX];		//弾配列100発分
+
+	//左
+	KdTexture* m_LeftBulletTex;				
+	static const int LEFTBULLET_MAX = 100;		
+	Bullet* m_LeftbulletList[LEFTBULLET_MAX];
+
+	//右
+	KdTexture* m_RightBulletTex;				//弾ポインタ
+	static const int RIGHTBULLET_MAX = 100;		//弾数
+	Bullet* m_RightbulletList[RIGHTBULLET_MAX];	//弾配列
 };
